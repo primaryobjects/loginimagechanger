@@ -36,6 +36,31 @@ then
 	fi
 fi
 
+function randomize {
+	# Run randomization script.
+	files=("$sourcePath"/*) #creates an array of all the files within src/ */
+	filecount="${#files[@]}"         #determines the length of the array
+	if [ filecount > 0 ]
+	then
+		randomid=$((RANDOM % filecount)) #uses $RANDOM to choose a random number between 0 and $filecount
+		filetomove="${files[$randomid]}" #the random file wich we'll move
+
+		# Disable case-sensitive regex matching.
+		shopt -s nocasematch;
+
+		if [[ $filetomove =~ jpg ]] || [[ $filetomove =~ png ]] || [[ $filetomove =~ gif ]]
+		then
+			echo "Using source folder: $sourcePath"
+			echo "Selected random image $filetomove"
+			echo "Copying to destination: $destPath"
+			cp "$filetomove" "$destPath"
+		else
+			echo "No images (.jpg, .gif, .png) found in $sourcePath"
+			echo "Please select a different folder for images: sudo bash loginimage.sh -i"
+		fi
+	fi
+}
+
 # Ensure running as root.
 if [ "$EUID" -ne 0 ]
 then
@@ -128,6 +153,10 @@ else
 					fi
 
 					echo "Successfully saved!"
+
+					# Randomize the background image for the first time.
+					randomize
+
 					echo "To see changes, reboot or manually run: sudo bash loginimage.sh"
 				fi
 			fi
@@ -137,28 +166,8 @@ else
 		then
 			echo "No configuration settings found. Please run: sudo bash loginimage.sh -i"
 		else
-			# Run randomization script.
-			files=("$sourcePath"/*) #creates an array of all the files within src/ */
-			filecount="${#files[@]}"         #determines the length of the array
-			if [ filecount > 0 ]
-			then
-				randomid=$((RANDOM % filecount)) #uses $RANDOM to choose a random number between 0 and $filecount
-				filetomove="${files[$randomid]}" #the random file wich we'll move
-
-				# Disable case-sensitive regex matching.
-				shopt -s nocasematch;
-
-				if [[ $filetomove =~ jpg ]] || [[ $filetomove =~ png ]] || [[ $filetomove =~ gif ]]
-				then
-					echo "Using source folder: $sourcePath"
-					echo "Selected random image $filetomove"
-					echo "Copying to destination: $destPath"
-					cp "$filetomove" "$destPath"
-				else
-					echo "No images (.jpg, .gif, .png) found in $sourcePath"
-					echo "Please select a different folder for images: sudo bash loginimage.sh -i"
-				fi
-			fi
+			# Randomize the background image.
+			randomize
 		fi
 	fi
 fi
