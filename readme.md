@@ -23,15 +23,15 @@ cd ~/Documents/login-image-changer
 sudo bash loginimage.sh
 ```
 
-(https://github.com/primaryobjects/loginimagechanger/master/screenshots/screenshot1.png)
+![Initial setup screen](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot1.png)
 
 2. Select a folder of images.
 
-(https://github.com/primaryobjects/loginimagechanger/master/screenshots/screenshot2.png)
+![Select a folder of images](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot2.png)
 
 3. Select the background image of your currently installed login theme. In the screenshot below, bg.png is the background image used in the theme. This file will be overwritten by Login Image Changer each time your PC starts up. 
 
-(https://github.com/primaryobjects/loginimagechanger/master/screenshots/screenshot3.png)
+![Select a background image from the current Login theme](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot3.png)
 
 4. It's now installed to run automatically at startup! If you want, you can manually run loginimage.sh to kick off the first random image.
 ```sh
