@@ -76,7 +76,7 @@ Login Image Changer uses Zenity for the user interface. The first time it runs w
 
 Saving creates the following auto-run entry in /etc/rc.local:
 ```sh
-sudo bash "/home/nada/Documents/login-image-changer/loginimage.sh" -r
+sudo bash "/home/username/Documents/login-image-changer/loginimage.sh" -r
 ```
 This allows the script to run each time the computer starts up.
 
