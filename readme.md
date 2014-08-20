@@ -64,7 +64,7 @@ sudo bash loginimage.sh -r
 sudo bash loginimage.sh -i
 ```
 
--u, --uninstall - Restores a backup of the original theme image, removes the settings folder, removes the auto-run entry from rc.local
+-u, --uninstall - Restores a backup of the original theme image, removes the settings folder, removes the auto-run entry from /etc/rc.local
 ```sh
 sudo bash loginimage.sh -u
 ```
