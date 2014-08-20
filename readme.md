@@ -35,7 +35,7 @@ sudo bash loginimage.sh
 
 ![Select a folder of images](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot2.png)
 
-3. Select the background image of your currently installed login theme. In the screenshot below, bg.png is the background image used in the theme. This file will be overwritten by Login Image Changer each time your PC starts up. 
+3. Select the background image of your currently installed login theme. In the screenshot below, bg.png is the background image used in the theme. This file will be overwritten by Login Image Changer each time your PC starts up. Hint: Login themes are accessible via the Linux "Login Window" app. GDM themes are located in /usr/share/mdm/themes, while HTML themes are located in /usr/share/mdm/html-themes.
 
 ![Select a background image from the current Login theme](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot3.png)
 
