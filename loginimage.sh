@@ -12,7 +12,7 @@ run=0
 sourcePath="none"
 destPath="none"
 
-echo "Login Image Changer v1.0 (http://www.dummysoftware.com)"
+echo "Login Image Changer v1.0 (http://github.com/primaryobjects/loginimagechanger)"
 echo ""
 
 # Check command-line arguments.
@@ -77,7 +77,7 @@ else
 	then
 		# The user specified --install or no settings exist yet.
 		# Show dialog to choose new folder paths.
-		zenity --forms --title="Login Image Changer" --text="Welcome to Login Image Changer\nhttp://www.dummysoftware.com\n\nAutomatically changes the login background image each time your PC starts up.\n\nPictures Folder: $sourcePath\nBackground Image to Change: $destPath\n\nWould you like to setup a random login background image?"
+		zenity --forms --title="Login Image Changer" --text="Welcome to Login Image Changer\nhttp://github.com/primaryobjects/loginimagechanger\n\nAutomatically changes the login background image each time your PC starts up.\n\nPictures Folder: $sourcePath\nBackground Image to Change: $destPath\n\nWould you like to setup a random login background image?"
 		result=$?
 
 		if [ $result = 0 ]
