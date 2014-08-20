@@ -1,0 +1,91 @@
+Login Image Changer
+=========
+### for Linux Mint
+
+
+Login Image Changer is a Linux bash script that lets you automatically change the login background image to a random picture from a folder of images. The script runs each time the computer boots up, giving you a fresh and exciting new image for your login screen each time.
+
+It's as simple as this:
+
+- Run loginimage.
+- Select a folder of images.
+- Select the background image file for your current login theme.
+
+That's it!
+
+Install
+---
+
+1. Download loginimage.sh and place it in a folder, such as ~/Documents/login-image-changer.
+
+```sh
+cd ~/Documents/login-image-changer
+sudo bash loginimage.sh
+```
+
+(https://github.com/primaryobjects/loginimagechanger/master/screenshots/screenshot1.png)
+
+2. Select a folder of images.
+
+(https://github.com/primaryobjects/loginimagechanger/master/screenshots/screenshot2.png)
+
+3. Select the background image of your currently installed login theme. In the screenshot below, bg.png is the background image used in the theme. This file will be overwritten by Login Image Changer each time your PC starts up. 
+
+(https://github.com/primaryobjects/loginimagechanger/master/screenshots/screenshot3.png)
+
+4. It's now installed to run automatically at startup! If you want, you can manually run loginimage.sh to kick off the first random image.
+```sh
+sudo bash loginimage.sh
+```
+
+5. Logout or restart your PC to see the changes take effect.
+
+Command Line Arguments
+---
+
+-h, --help - Displays help
+```sh
+sudo bash loginimage.sh -h
+```
+
+-r, --run - Run login image changer and change background image
+```sh
+sudo bash loginimage.sh -r
+```
+
+-i, --install - Displays UI to select a new folder and modify settings
+```sh
+sudo bash loginimage.sh -i
+```
+
+-u, --uninstall - Restores a backup of the original theme image, removes the settings folder, removes the auto-run entry from rc.local
+```sh
+sudo bash loginimage.sh -u
+```
+
+Technical Details
+---
+
+Login Image Changer uses Zenity for the user interface. The first time it runs without command line arguments, it checks if the folder exists /usr/share/login-image-changer. If the folder does not exist, the GUI will display, allowing the user to choose options. Upon saving, the folder will be created. The folder contains a settings file and a backup copy of the target theme image to be overwritten.
+
+Saving creates the following auto-run entry in /etc/rc.local:
+```sh
+sudo bash "/home/nada/Documents/login-image-changer/loginimage.sh" -r
+```
+This allows the script to run each time the computer starts up.
+
+If you get tired of the fresh and exciting login background images, you can always uninstall with the -u switch.
+
+Uninstalling cleans up the files by copying the backup image from /usr/share/login-image-changer back into the original theme folder, removing the entry from rc.local, and removing the settings folder /usr/share/login-image-changer.
+
+The script also restores the backup of the theme image when you use the -i switch to pick a new folder and/or theme. This way, if you change themes (in which case, Login Image Changer will be updating the wrong background image now), you can use the -i switch to run the GUI and select the new theme filename. The prior theme will have its original background image restored and the new theme will now be updated upon each PC startup.
+
+License
+----
+
+MIT
+
+Author
+----
+Kory Becker
+http://www.primaryobjects.com/kory-becker.aspx
