@@ -5,6 +5,12 @@ Login Image Changer
 
 Login Image Changer is a Linux bash script that lets you automatically change the login background image to a random picture from a folder of images. The script runs each time the computer boots up, giving you a fresh and exciting new image for your login screen each time.
 
+![Screenshot 1](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/login1-500x300.png)
+
+![Screenshot 2](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/login2-500x300.png)
+
+![Screenshot 3](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/login3-500x300.png)
+
 It's as simple as this:
 
 - Run loginimage.sh.
