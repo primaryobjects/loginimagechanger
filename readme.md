@@ -74,7 +74,7 @@ Technical Details
 
 Login Image Changer uses Zenity for the user interface. The first time it runs without command line arguments, it checks if the folder exists /usr/share/login-image-changer. If the folder does not exist, the GUI will display, allowing the user to choose options. Upon saving, the folder will be created. The folder contains a settings file and a backup copy of the target theme image to be overwritten.
 
-Saving creates the following auto-run entry in /etc/rc.local:
+Saving creates the following auto-run entry in /etc/rc.local (substituting the path of where the script is ran from):
 ```sh
 sudo bash "/home/username/Documents/login-image-changer/loginimage.sh" -r
 ```
@@ -82,7 +82,7 @@ This allows the script to run each time the computer starts up.
 
 If you get tired of the fresh and exciting login background images, you can always uninstall with the -u switch.
 
-Uninstalling cleans up the files by copying the backup image from /usr/share/login-image-changer back into the original theme folder, removing the entry from rc.local, and removing the settings folder /usr/share/login-image-changer.
+Uninstalling cleans up the files by copying the backup image from /usr/share/login-image-changer back into the original theme folder, removing the entry from /etc/rc.local, and removing the settings folder /usr/share/login-image-changer.
 
 The script also restores the backup of the theme image when you use the -i switch to pick a new folder and/or theme. This way, if you change themes (in which case, Login Image Changer will be updating the wrong background image now), you can use the -i switch to run the GUI and select the new theme filename. The prior theme will have its original background image restored and the new theme will now be updated upon each PC startup.
 
