@@ -22,7 +22,7 @@ That's it!
 Install
 ---
 
-1. Download loginimage.sh and place it in a folder, such as ~/Documents/login-image-changer.
+1. Download [loginimage.sh](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/loginimage.sh) and place it in a folder, such as ~/Documents/login-image-changer.
 
  ```sh
  cd ~/Documents/login-image-changer
