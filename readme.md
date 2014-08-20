@@ -7,9 +7,9 @@ Login Image Changer is a Linux bash script that lets you automatically change th
 
 It's as simple as this:
 
-- Run loginimage.
+- Run loginimage.sh.
 - Select a folder of images.
-- Select the background image file for your current login theme.
+- Select the background image for your current login theme.
 
 That's it!
 
