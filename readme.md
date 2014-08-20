@@ -24,25 +24,25 @@ Install
 
 1. Download loginimage.sh and place it in a folder, such as ~/Documents/login-image-changer.
 
-```sh
-cd ~/Documents/login-image-changer
-sudo bash loginimage.sh
-```
+ ```sh
+ cd ~/Documents/login-image-changer
+ sudo bash loginimage.sh
+ ```
 
-![Initial setup screen](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot1.png)
+ ![Initial setup screen](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot1.png)
 
 2. Select a folder of images.
 
-![Select a folder of images](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot2.png)
+ ![Select a folder of images](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot2.png)
 
 3. Select the background image of your currently installed login theme. In the screenshot below, bg.png is the background image used in the theme. This file will be overwritten by Login Image Changer each time your PC starts up. Hint: Login themes are accessible via the Linux "Login Window" app. GDM themes are located in /usr/share/mdm/themes, while HTML themes are located in /usr/share/mdm/html-themes.
 
-![Select a background image from the current Login theme](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot3.png)
+ ![Select a background image from the current Login theme](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot3.png)
 
 4. It's now installed to run automatically at startup! If you want, you can manually run loginimage.sh to kick off the first random image.
-```sh
-sudo bash loginimage.sh
-```
+ ```sh
+ sudo bash loginimage.sh
+ ```
 
 5. Logout or restart your PC to see the changes take effect.
 
