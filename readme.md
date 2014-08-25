@@ -43,12 +43,7 @@ Install
 
  ![Select hours between changes](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot4.png)
 
-5. It's now installed to run automatically at startup! If you want, you can manually run loginimage.sh to kick off the first random image.
- ```sh
- sudo bash loginimage.sh
- ```
-
-6. Logout or restart your PC to see the changes take effect.
+5. It's now installed to run automatically at startup! Logout to see the changes take effect.
 
 Command Line Arguments
 ---
@@ -89,6 +84,30 @@ If you get tired of the fresh and exciting login background images, you can alwa
 Uninstalling cleans up the files by copying the backup image from /usr/share/login-image-changer back into the original theme folder, removing the entry from /etc/rc.local, and removing the settings folder /usr/share/login-image-changer.
 
 The script also restores the backup of the theme image when you use the -i switch to pick a new folder and/or theme. This way, if you change themes (in which case, Login Image Changer will be updating the wrong background image now), you can use the -i switch to run the GUI and select the new theme filename. The prior theme will have its original background image restored and the new theme will now be updated upon each PC startup.
+
+Trouble-Shooting
+---
+
+1. Check the current settings by running the setup:
+ ```sh
+ sudo bash loginimage.sh -i
+ ```
+ This will allow you to view the selected picture directories, hours between changes, and the date of the last change.
+
+2. Run it manually:
+ ```sh
+ sudo bash loginimage.sh -r
+ ```
+ This will run Login Image Changer and let you view the output. Check for any errors. Also, note if the number of hours since the last change has not elapsed, then the image will not be changed.
+ 
+3. If the image fails to update only during reboot, you can log the calls to Login Image Changer by editing /etc/rc.local and adding the following lines towards the top of the file:
+ ```sh
+ # Log rc.local to tmp/rc.local.log
+ exec 2> /tmp/rc.local.log      # send stderr from rc.local to a log file
+ exec 1>&2                      # send stdout to the same log file
+ set -x   
+ ```
+ Then reboot your PC, log in, and view the file /tmp/rc.local.log to check for any errors. Login Image Changer outputs status each time it runs.
 
 License
 ----
