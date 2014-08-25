@@ -117,4 +117,4 @@ MIT
 Author
 ----
 Kory Becker
-http://www.primaryobjects.com/kory-becker.aspx
+http://www.primaryobjects.com/kory-becker
