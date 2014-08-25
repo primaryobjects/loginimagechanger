@@ -1,6 +1,7 @@
 #!/bin/bash
 appPath=/usr/share/login-image-changer
 settingsPath=$appPath/settings.conf
+lastChangedPath=$appPath/lastChanged.conf
 rcLocalPath="/etc/rc.local"
 scriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 runCommand="sudo bash \"$scriptPath/loginimage.sh\" -r"
@@ -9,6 +10,7 @@ settingsExists=0
 install=0
 uninstall=0
 run=0
+hoursBetweenChange=0
 sourcePath="none"
 destPath="none"
 
@@ -18,47 +20,51 @@ echo ""
 # Check command-line arguments.
 if [ $1 ]
 then
-	if [ $1 = "--install" ] || [ $1 = "-i" ]
-	then
-		install=1
-	elif [ $1 = "--uninstall" ] || [ $1 = "-u" ]
-	then
-		uninstall=1
-	elif [ $1 = "--run" ] || [ $1 = "-r" ]
-	then
-		run=1
-	else
-		echo "-h, --help       Help"
-		echo "-r, --run        Run login image changer and change background image"
-		echo "-i, --install    Install or change existing settings"
-		echo "-u, --uninstall  Uninstall"
-		exit
-	fi
+    if [ $1 = "--install" ] || [ $1 = "-i" ]
+    then
+        install=1
+    elif [ $1 = "--uninstall" ] || [ $1 = "-u" ]
+    then
+        uninstall=1
+    elif [ $1 = "--run" ] || [ $1 = "-r" ]
+    then
+        run=1
+    else
+        echo "-h, --help       Help"
+        echo "-r, --run        Run login image changer and change background image"
+        echo "-i, --install    Install or change existing settings"
+        echo "-u, --uninstall  Uninstall"
+        exit
+    fi
 fi
 
 function randomize {
-	# Run randomization script.
-	files=("$sourcePath"/*) #creates an array of all the files within src/ */
-	filecount="${#files[@]}"         #determines the length of the array
-	if [ filecount > 0 ]
-	then
-		randomid=$((RANDOM % filecount)) #uses $RANDOM to choose a random number between 0 and $filecount
-		filetomove="${files[$randomid]}" #the random file wich we'll move
+    # Run randomization script.
+    files=("$sourcePath"/*) #creates an array of all the files within src/ */
+    filecount="${#files[@]}"         #determines the length of the array
+    if [ filecount > 0 ]
+    then
+        randomid=$((RANDOM % filecount)) #uses $RANDOM to choose a random number between 0 and $filecount
+        filetomove="${files[$randomid]}" #the random file wich we'll move
 
-		# Disable case-sensitive regex matching.
-		shopt -s nocasematch;
+        # Disable case-sensitive regex matching.
+        shopt -s nocasematch;
 
-		if [[ $filetomove =~ jpg ]] || [[ $filetomove =~ png ]] || [[ $filetomove =~ gif ]]
-		then
-			echo "Using source folder: $sourcePath"
-			echo "Selected random image $filetomove"
-			echo "Copying to destination: $destPath"
-			cp "$filetomove" "$destPath"
-		else
-			echo "No images (.jpg, .gif, .png) found in $sourcePath"
-			echo "Please select a different folder for images: sudo bash loginimage.sh -i"
-		fi
-	fi
+        if [[ $filetomove =~ jpg ]] || [[ $filetomove =~ png ]] || [[ $filetomove =~ gif ]]
+        then
+            echo "Using source folder: $sourcePath"
+            echo "Selected random image $filetomove"
+            echo "Copying to destination: $destPath"
+            cp "$filetomove" "$destPath"
+
+            # Update date of last changed.
+            echo "$hoursBetweenChange" > "$lastChangedPath"
+            echo `date` >> "$lastChangedPath"
+        else
+            echo "No images (.jpg, .gif, .png) found in $sourcePath"
+            echo "Please select a different folder for images: sudo bash loginimage.sh -i"
+        fi
+    fi
 }
 
 # Ensure running as root.
@@ -66,108 +72,162 @@ if [ "$EUID" -ne 0 ]
 then
   echo "Please run as root: sudo bash loginimage.sh"
 else
-	# Check if the settings file exists.
-	if [ -f "$settingsPath" ]
-	then
-		settingsExists=1
+    # Check if the settings file exists.
+    if [ -f "$settingsPath" ]
+    then
+        settingsExists=1
 
-		# Read settings from config file.
-		exec 6< "$settingsPath"
-		read sourcePath <&6
-		read destPath <&6
-		exec 6<&-
-	fi
+        # Read settings from config file.
+        exec 6< "$settingsPath"
+        read sourcePath <&6
+        read destPath <&6
+        exec 6<&-
+    fi
 
-	if [ $uninstall = 1 ]
-	then
-		if [ "$sourcePath" = "none" ] || [ "$destPath" = "none" ]
-		then
-			echo "Nothing to uninstall."
-		else
-			echo "Uninstalling"
-		
-			backupFile=$(basename "$destPath")
-			echo "Restoring backup of $appPath/$backupFile to $destPath"
-			mv -f "$appPath"/"$backupFile" "$destPath"
+    if [ -f "$lastChangedPath" ]
+    then
+        # Read last changed date and hours from config file.
+        exec 6< "$lastChangedPath"
+        read hoursBetweenChange <&6
+        read lastChangedDate <&6
+        exec 6<&-
+    fi
 
-			echo "Removing run command from $rcLocalPath"
-			sed -i '/loginimage\.sh/d' "$rcLocalPath"
+    if [ $uninstall = 1 ]
+    then
+        if [ "$sourcePath" = "none" ] || [ "$destPath" = "none" ]
+        then
+            echo "Nothing to uninstall."
+        else
+            echo "Uninstalling"
+        
+            backupFile=$(basename "$destPath")
+            echo "Restoring backup of $appPath/$backupFile to $destPath"
+            mv -f "$appPath"/"$backupFile" "$destPath"
 
-			echo "Removing folder $appPath"
-			rm -r -f "$appPath"
+            echo "Removing run command from $rcLocalPath"
+            sed -i '/loginimage\.sh/d' "$rcLocalPath"
 
-			echo "Uninstall complete!"
-		fi
-	elif ([ $settingsExists = 0 ] || [ $install = 1 ]) && [ $run = 0 ]
-	then
-		# The user specified --install or no settings exist yet.
-		# Show dialog to choose new folder paths.
-		zenity --forms --title="Login Image Changer" --text="Welcome to Login Image Changer\nhttp://github.com/primaryobjects/loginimagechanger\n\nAutomatically changes the login background image each time your PC starts up.\n\nPictures Folder: $sourcePath\nBackground Image to Change: $destPath\n\nWould you like to setup a random login background image?"
-		result=$?
+            echo "Removing folder $appPath"
+            rm -r -f "$appPath"
 
-		if [ $result = 0 ]
-		then
-			sourcePath=$(zenity --file-selection --directory --title="Select a folder containing images")
-			result=$?
-			if [ $result = 0 ]
-			then
-				# We have the source folder for images. Now, get the destination background image filename to overwrite.
-				origDestPath="$destPath"
-				destPath=$(zenity --file-selection --title="Select the background image to overwrite from your installed Login Window Theme")
-				result=$?
-				if [ $result = 0 ]
-				then
-					echo ""
+            echo "Uninstall complete!"
+        fi
+    elif ([ $settingsExists = 0 ] || [ $install = 1 ]) && [ $run = 0 ]
+    then
+        # The user specified --install or no settings exist yet.
+        # Show dialog to choose new folder paths.
+        zenity --forms --title="Login Image Changer" --text="Welcome to Login Image Changer\nhttp://github.com/primaryobjects/loginimagechanger\n\nAutomatically changes the login background image each time your PC starts up.\n\nPictures Folder: $sourcePath\nBackground Image to Change: $destPath\nHours Between Changes: $hoursBetweenChange\nLast Changed: $lastChangedDate\n\nWould you like to setup a random login background image?"
+        result=$?
 
-					# Restore any previous settings.					
-					if [ "$origDestPath" != "none" ]
-					then
-						# Previously saved settings. Restore backup file, then overwrite with new changes.
-						backupFile=$(basename "$origDestPath")
-						echo "Restoring backup of $appPath/$backupFile to $origDestPath"
-						mv -f "$appPath"/"$backupFile" "$origDestPath"
-					fi
+        if [ $result = 0 ]
+        then
+            sourcePath=$(zenity --file-selection --directory --title="Select a folder containing images")
+            result=$?
+            if [ $result = 0 ]
+            then
+                # We have the source folder for images. Now, get the destination background image filename to overwrite.
+                origDestPath="$destPath"
+                destPath=$(zenity --file-selection --title="Select the background image to overwrite from your installed Login Window Theme")
+                result=$?
+                if [ $result = 0 ]
+                then
+                    # Show dialog to choose number of hours between image changes.
+                    hoursBetweenChange=`zenity --scale --title="Login Image Changer" --text="How many hours between image changes? (0=every reboot, 24=once a day)" --value=0 --min-value=0 --max-value=240`
+                    result=$?
 
-					# Save new settings.
-					# Create directories (-p to ignore file exists errors).
-					mkdir -p "$appPath"
+                    if [ $result = 0 ]
+                    then
+                        echo ""
 
-					# Write first line of file.
-					echo "$sourcePath" > "$settingsPath"
-					# Append second line to file.
-					echo "$destPath" >> "$settingsPath"
+                        # Restore any previous settings.                    
+                        if [ "$origDestPath" != "none" ]
+                        then
+                            # Previously saved settings. Restore backup file, then overwrite with new changes.
+                            backupFile=$(basename "$origDestPath")
+                            echo "Restoring backup of $appPath/$backupFile to $origDestPath"
+                            mv -f "$appPath"/"$backupFile" "$origDestPath"
+                        fi
 
-					echo "Configuration saved to $settingsPath"
+                        # Save new settings.
+                        # Create directories (-p to ignore file exists errors).
+                        mkdir -p "$appPath"
 
-					# Make a backup of the destination file.
-					cp -f "$destPath" "$appPath"
-					echo "Created a backup copy of $destPath to $appPath"
+                        # Write first line of file.
+                        echo "$sourcePath" > "$settingsPath"
+                        # Append second line to file.
+                        echo "$destPath" >> "$settingsPath"
 
-					# Append entry to /etc/rc.local to run at startup.
-					if grep -q loginimage "$rcLocalPath"
-					then
-						echo "loginimage.sh is already installed in $rcLocalPath."
-					else
-						sed -i '$i \'"$runCommand"'\n' "$rcLocalPath"
-						echo "Run command appened to $rcLocalPath"
-					fi
+                        echo "Configuration saved to $settingsPath"
 
-					echo "Successfully saved!"
+                        # Make a backup of the destination file.
+                        cp -f "$destPath" "$appPath"
+                        echo "Created a backup copy of $destPath to $appPath"
 
-					# Randomize the background image for the first time.
-					randomize
+                        # Append entry to /etc/rc.local to run at startup.
+                        if grep -q loginimage "$rcLocalPath"
+                        then
+                            echo "loginimage.sh is already installed in $rcLocalPath."
+                        else
+                            sed -i '$i \'"$runCommand"'\n' "$rcLocalPath"
+                            echo "Run command appened to $rcLocalPath"
+                        fi
 
-					echo "To see changes, reboot or manually run: sudo bash loginimage.sh"
-				fi
-			fi
-		fi
-	else
-		if [ "$sourcePath" = "none" ] || [ "$destPath" = "none" ]
-		then
-			echo "No configuration settings found. Please run: sudo bash loginimage.sh -i"
-		else
-			# Randomize the background image.
-			randomize
-		fi
-	fi
+                        # Write lastChanged.conf file.
+                        if (( $hoursBetweenChange > 0 ))
+                        then
+                            echo "$hoursBetweenChange" > "$lastChangedPath"
+                            echo "" >> "$lastChangedPath"
+                        fi
+
+                        echo "Successfully saved!"
+
+                        # Randomize the background image for the first time.
+                        randomize
+
+                        echo "To see changes, reboot or manually run: sudo bash loginimage.sh"
+                    fi
+                fi
+            fi
+        fi
+    else
+        if [ "$sourcePath" = "none" ] || [ "$destPath" = "none" ]
+        then
+            echo "No configuration settings found. Please run: sudo bash loginimage.sh -i"
+        else
+            hours=9999
+
+            # Check if the lastChanged file exists.
+            if [ -f "$lastChangedPath" ]
+            then
+                # Read date of last change.
+                exec 6< "$lastChangedPath"
+                read hoursBetweenChange <&6
+                read lastChangedDate <&6
+                exec 6<&-
+
+                if (( ${#lastChangedDate} > 0 ))
+                then
+                    currentDate=`date`
+                    currentDateObj=$(date --date="$currentDate" +%s)
+                    lastChangedDateObj=$(date --date="$lastChangedDate" +%s)
+                    ticks=$(($currentDateObj - $lastChangedDateObj))
+                    multiplier=$((60*60))
+
+                    # Get number of seconds difference.
+                    hours=$(($ticks/$multiplier))
+
+                    echo "Comparing date of last change ($lastChangedDate, $hours hours ago)."
+                fi
+            fi
+
+            if (( $hours >= $hoursBetweenChange ))
+            then
+                # Randomize the background image.
+                randomize
+            else
+                echo "Image not changed."
+            fi
+        fi
+    fi
 fi

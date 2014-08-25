@@ -1,6 +1,6 @@
 Login Image Changer
 =========
-### for Linux Mint
+### for Linux Mint and Ubuntu
 
 
 Login Image Changer lets you automatically change the login background each time your computer starts up. It selects a random image from a target folder and updates your theme's background image, giving you a fresh and exciting new image for your login screen each time!
@@ -39,12 +39,14 @@ Install
 
  ![Select a background image from the current Login theme](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot3.png)
 
-4. It's now installed to run automatically at startup! If you want, you can manually run loginimage.sh to kick off the first random image.
+4. Set how frequently to change the image by choosing the number of hours between changes. Leave this as 0 to change the image every reboot. Set to 24 to change once per day.
+
+5. It's now installed to run automatically at startup! If you want, you can manually run loginimage.sh to kick off the first random image.
  ```sh
  sudo bash loginimage.sh
  ```
 
-5. Logout or restart your PC to see the changes take effect.
+6. Logout or restart your PC to see the changes take effect.
 
 Command Line Arguments
 ---
