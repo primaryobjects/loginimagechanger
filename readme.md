@@ -41,6 +41,8 @@ Install
 
 4. Set how frequently to change the image by choosing the number of hours between changes. Leave this as 0 to change the image every reboot. Set to 24 to change once per day.
 
+![Select hours between changes](https://raw.githubusercontent.com/primaryobjects/loginimagechanger/master/screenshots/screenshot4.png)
+
 5. It's now installed to run automatically at startup! If you want, you can manually run loginimage.sh to kick off the first random image.
  ```sh
  sudo bash loginimage.sh
